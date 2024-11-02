@@ -28,13 +28,14 @@ const humidityEl: HTMLParagraphElement = document.getElementById(
   'humidity'
 ) as HTMLParagraphElement;
 
+
 /*
 
 API Calls
 
 */
 
-const fetchWeather = async (cityName: string) => {
+async function fetchWeather(cityName: string) {
   const response = await fetch('/api/weather/', {
     method: 'POST',
     headers: {
@@ -49,20 +50,21 @@ const fetchWeather = async (cityName: string) => {
 
   renderCurrentWeather(weatherData[0]);
   renderForecast(weatherData.slice(1));
-};
+}
 
 const fetchSearchHistory = async () => {
-  const history = await fetch('/api/weather/history', {
+  const response = await fetch('/api/weather/history', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
   });
+  const history = await response.json();
   return history;
 };
 
-const deleteCityFromHistory = async (id: string) => {
-  await fetch(`/api/weather/history/${id}`, {
+const deleteCityFromHistory = async (cityID: string) => {
+  await fetch(`/api/weather/history/${cityID}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -77,11 +79,11 @@ Render Functions
 */
 
 const renderCurrentWeather = (currentWeather: any): void => {
-  const { city, date, icon, iconDescription, tempF, windSpeed, humidity } =
+  const { cityName, date, icon, iconDescription, tempF, windSpeed, humidity } =
     currentWeather;
 
   // convert the following to typescript
-  heading.textContent = `${city} (${date})`;
+  heading.textContent = `${cityName} (${date})`;
   weatherIcon.setAttribute(
     'src',
     `https://openweathermap.org/img/w/${icon}.png`
@@ -139,8 +141,7 @@ const renderForecastCard = (forecast: any) => {
   }
 };
 
-const renderSearchHistory = async (searchHistory: any) => {
-  const historyList = await searchHistory.json();
+const renderSearchHistory = (historyList: any) => {
 
   if (searchHistoryContainer) {
     searchHistoryContainer.innerHTML = '';
@@ -202,12 +203,12 @@ const createForecastCard = () => {
   };
 };
 
-const createHistoryButton = (city: string) => {
+const createHistoryButton = (cityName: string) => {
   const btn = document.createElement('button');
   btn.setAttribute('type', 'button');
   btn.setAttribute('aria-controls', 'today forecast');
   btn.classList.add('history-btn', 'btn', 'btn-secondary', 'col-10');
-  btn.textContent = city;
+  btn.textContent = cityName;
 
   return btn;
 };
@@ -265,8 +266,8 @@ const handleSearchFormSubmit = (event: any): void => {
 
 const handleSearchHistoryClick = (event: any) => {
   if (event.target.matches('.history-btn')) {
-    const city = event.target.textContent;
-    fetchWeather(city).then(getAndRenderHistory);
+    const cityName = event.target.textContent;
+    fetchWeather(cityName).then(getAndRenderHistory);
   }
 };
 
@@ -284,7 +285,7 @@ Initial Render
 
 const getAndRenderHistory = () =>
   fetchSearchHistory().then(renderSearchHistory);
-
+  fetchSearchHistory().then((history) => renderSearchHistory(history));
 searchForm?.addEventListener('submit', handleSearchFormSubmit);
 searchHistoryContainer?.addEventListener('click', handleSearchHistoryClick);
 

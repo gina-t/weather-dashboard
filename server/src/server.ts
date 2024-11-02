@@ -1,13 +1,20 @@
 import express from 'express';
-const PORT = process.env.PORT || 3001;
-
+import path from 'path';
+import { fileURLToPath } from 'url';
+const PORT = process.env.PORT || 3000;
 import routes from './routes/index.js';
 import htmlRoutes from './routes/htmlRoutes.js';
 
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+console.log(__filename);
+const __dirname = path.dirname(__filename);
+console.log(__dirname);
+const __parentDir = path.resolve(__dirname, '../../');
+console.log(__parentDir);
 
-// TODO: Set up static folder and serve static files of entire client dist folder
-// 
+// TODO: Serve static files from the client/dist directory
+app.use(express.static(path.join(__parentDir, '/client/dist')));
 app.use(htmlRoutes);
 
 // TODO: Implement middleware for parsing JSON and urlencoded form data

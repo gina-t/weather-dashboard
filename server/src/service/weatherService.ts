@@ -1,6 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 // TODO: Define an interface for the Coordinates object
 interface Coordinates {
   lat: number;
@@ -37,8 +34,8 @@ class WeatherService {
   public cityName: string;
 
   constructor() {
-    this.baseURL = process.env.baseURL || '';
-    this.apiKey = process.env.apiKey || '';
+    this.baseURL = process.env.baseURL || "https://api.openweathermap.org/data/2.5/forecast";
+    this.apiKey = process.env.apiKey || "b2a6b4e866af7b332ea03ad29ab62223";
     this.cityName = '';
   }
   // TODO: Create fetchLocationData method
@@ -72,7 +69,7 @@ class WeatherService {
   private async buildWeatherQuery(coordinates: Coordinates): Promise<string> {     
     const { baseURL, apiKey } = this;
     const { lat, lon } = coordinates;
-    const query = `${baseURL}/weather?lat=${lat}&lon=${lon}&apiKey=${apiKey}`;
+    const query = `${baseURL}&lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
     return query;
   }
 
