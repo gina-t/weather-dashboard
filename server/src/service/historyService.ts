@@ -16,12 +16,14 @@ class HistoryService {
   private async read() {
     try {
       const data = await fs.readFile('./db/searchHistory.json', 'utf-8');
+      console.log(data);
       return JSON.parse(data);
     } catch (error) {
       console.error(error);
       return [];
     }
   }
+  
  
   // TODO: Define a write method that writes the updated cities array to the searchHistory.json file
   private async write(cities: City[]) {
