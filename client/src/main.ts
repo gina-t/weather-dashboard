@@ -28,14 +28,13 @@ const humidityEl: HTMLParagraphElement = document.getElementById(
   'humidity'
 ) as HTMLParagraphElement;
 
-
 /*
 
 API Calls
 
 */
 
-async function fetchWeather(cityName: string) {
+const fetchWeather = async (cityName:string) => {
   const response = await fetch('/api/weather/', {
     method: 'POST',
     headers: {
@@ -43,6 +42,10 @@ async function fetchWeather(cityName: string) {
     },
     body: JSON.stringify({ cityName }),
   });
+  if (!response.ok) {
+    console.error('Error fetching weather:', response.status, response.statusText);
+    return;
+  }
 
   const weatherData = await response.json();
 
@@ -50,21 +53,20 @@ async function fetchWeather(cityName: string) {
 
   renderCurrentWeather(weatherData[0]);
   renderForecast(weatherData.slice(1));
-}
+};
 
 const fetchSearchHistory = async () => {
-  const response = await fetch('/api/weather/history', {
+  const history = await fetch('/api/weather/history', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
   });
-  const history = await response.json();
   return history;
 };
 
-const deleteCityFromHistory = async (cityID: string) => {
-  await fetch(`/api/weather/history/${cityID}`, {
+const deleteCityFromHistory = async (id: string) => {
+  await fetch(`/api/weather/history/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -79,11 +81,11 @@ Render Functions
 */
 
 const renderCurrentWeather = (currentWeather: any): void => {
-  const { cityName, date, icon, iconDescription, tempF, windSpeed, humidity } =
+  const { city, date, icon, iconDescription, tempF, windSpeed, humidity } =
     currentWeather;
 
   // convert the following to typescript
-  heading.textContent = `${cityName} (${date})`;
+  heading.textContent = `${city} (${date})`;
   weatherIcon.setAttribute(
     'src',
     `https://openweathermap.org/img/w/${icon}.png`
@@ -141,7 +143,8 @@ const renderForecastCard = (forecast: any) => {
   }
 };
 
-const renderSearchHistory = (historyList: any) => {
+const renderSearchHistory = async (searchHistory: any) => {
+  const historyList = await searchHistory.json();
 
   if (searchHistoryContainer) {
     searchHistoryContainer.innerHTML = '';
@@ -203,12 +206,12 @@ const createForecastCard = () => {
   };
 };
 
-const createHistoryButton = (cityName: string) => {
+const createHistoryButton = (city: string) => {
   const btn = document.createElement('button');
   btn.setAttribute('type', 'button');
   btn.setAttribute('aria-controls', 'today forecast');
   btn.classList.add('history-btn', 'btn', 'btn-secondary', 'col-10');
-  btn.textContent = cityName;
+  btn.textContent = city;
 
   return btn;
 };
@@ -266,8 +269,8 @@ const handleSearchFormSubmit = (event: any): void => {
 
 const handleSearchHistoryClick = (event: any) => {
   if (event.target.matches('.history-btn')) {
-    const cityName = event.target.textContent;
-    fetchWeather(cityName).then(getAndRenderHistory);
+    const city = event.target.textContent;
+    fetchWeather(city).then(getAndRenderHistory);
   }
 };
 
@@ -285,7 +288,7 @@ Initial Render
 
 const getAndRenderHistory = () =>
   fetchSearchHistory().then(renderSearchHistory);
-  fetchSearchHistory().then((history) => renderSearchHistory(history));
+
 searchForm?.addEventListener('submit', handleSearchFormSubmit);
 searchHistoryContainer?.addEventListener('click', handleSearchHistoryClick);
 
