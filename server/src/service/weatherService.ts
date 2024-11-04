@@ -30,13 +30,20 @@ class WeatherService {
   // TODO: Define the baseURL, API key, and city name properties
   public baseUrl: string;
   public apiKey: string;
-  public cityName: string;
+  public cityName: string = '';
 
   constructor() {
-    this.apiKey = process.env.apiKEY || "9bed6f76e49a7250f6a24bbc90ca292f";
-    this.baseUrl = process.env.baseURL || "https://api.openweathermap.org/data/2.5";
-    
-    this.cityName = '';
+    this.baseUrl = process.env.BASE_URL || "https://api.openweathermap.org/data/2.5";
+    this.apiKey = process.env.API_KEY || "9bed6f76e49a7250f6a24bbc90ca292f";
+  }
+  async fetchWeather() {
+    const url = `${this.baseUrl}/weather?q=${this.cityName}&appid=${this.apiKey}`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Error fetching weather data: ${response.statusText}`);
+    }
+    const data = await response.json();
+    return data;
   }
 
   // TODO: Create fetchLocationData method
@@ -145,4 +152,4 @@ class WeatherService {
   }
 }
 
-export default new WeatherService;
+export default WeatherService;
