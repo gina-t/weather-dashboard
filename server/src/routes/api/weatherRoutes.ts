@@ -1,7 +1,7 @@
 import { Router } from 'express';
 const router = Router();
-import HistoryService from '../../service/historyService.js';
-import WeatherService from '../../service/weatherService.js';
+import HistoryService from '../../service/historyService';
+import WeatherService from '../../service/weatherService';
 
 // TODO: POST request with city name to retrieve weather data
 // TODO: GET weather data from city name
