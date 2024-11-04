@@ -3,6 +3,6 @@ const router = express.Router();
 
 import weatherRoutes from './weatherRoutes.js';
 
-router.use('/weather', weatherRoutes);
+router.use('/api/weather/', weatherRoutes);
 
 export default router;

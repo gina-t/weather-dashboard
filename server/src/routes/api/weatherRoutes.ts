@@ -6,7 +6,7 @@ import WeatherService from '../../service/weatherService.js';
 // TODO: POST request with city name to retrieve weather data
 // TODO: GET weather data from city name
 // TODO: save city to search history
-router.post('/weather', async (req, res) => {
+router.post('/api/weather/', async (req, res) => {
   const cityName = req.body.city;
   if (!cityName) {
     res.status(400).json({ message: 'City name is required' });
@@ -25,7 +25,7 @@ router.post('/weather', async (req, res) => {
 
 
 // TODO: GET search history
-router.get('/history', async (_, res) => {
+router.get('/api/weather/history', async (_, res) => {
   try {
     const history = await HistoryService.getCities();
     res.json(history);
@@ -36,7 +36,7 @@ router.get('/history', async (_, res) => {
 });
 
 // TODO: DELETE city from search history
-router.delete('/history/:id', async (req, res) => {
+router.delete('/api/weather/history/:id', async (req, res) => {
   try {
     if (!req.params.id) {
       res.status(400).json({ msg: 'State id is required' });

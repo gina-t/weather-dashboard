@@ -1,4 +1,3 @@
-
 // TODO: Define an interface for the Coordinates object
 interface Coordinates {
   lat: number;
