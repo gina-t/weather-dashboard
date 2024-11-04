@@ -40,5 +40,5 @@ gina-t
 ## Questions
 
 For enquiries, please contact me at:
-   - [Email](#email)
-   - [GitHub](#github)
+   - (ginadrcoder@gmail.com)(#email)
+   - (https://github.com/gina-t)(#github)
